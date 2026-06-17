@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
 
-from pydantic.json_schema import GenerateJsonSchema
 import pytest
+from pydantic.json_schema import GenerateJsonSchema
 
 from cargo_metadata import Metadata
 

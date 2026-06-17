@@ -3,6 +3,8 @@ name = "cargo-metadata"
 version = "1.0.0"
 description = "Pydantic types for cargo metadata output"
 readme = "README.md"
+license = "MIT OR Apache-2.0"
+license-files = ["LICENSE-MIT", "LICENSE-APACHE"]
 authors = [
     { name = "Crystal Durham", email = "crystal.durham@canonical.com" }
 ]
@@ -10,6 +12,19 @@ requires-python = ">=3.12"
 dependencies = [
     "pydantic>=2.7",
 ]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Repository = "https://github.com/canonical/py-cargo-metadata"
+Issues = "https://github.com/canonical/py-cargo-metadata/issues"
 
 [build-system]
 requires = ["uv_build>=0.11.16,<0.12.0"]

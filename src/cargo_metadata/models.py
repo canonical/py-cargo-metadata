@@ -54,7 +54,9 @@ class Target(
     """Absolute source path to the target root file."""
     edition: str
     """Rust edition used by this target."""
-    required_features: list[str] = Field(default_factory=list, alias="required-features")
+    required_features: list[str] = Field(
+        default_factory=list, alias="required-features"
+    )
     """Feature names required for this target to build."""
     doc: bool = True
     """Whether docs are built for this target."""
@@ -174,7 +176,7 @@ class Resolve(BaseModel, extra="allow", use_attribute_docstrings=True):
 class Metadata(BaseModel, extra="allow", use_attribute_docstrings=True):
     """Top-level `cargo metadata --format-version 1` document.
 
-    This model captures workspace-level package and resolve information emitted by Cargo.
+    Captures workspace-level package and resolve information emitted by Cargo.
     """
 
     version: Literal[1]

@@ -535,7 +535,7 @@
     }
   },
   "additionalProperties": true,
-  "description": "Top-level `cargo metadata --format-version 1` document.\n\nThis model captures workspace-level package and resolve information emitted by Cargo.",
+  "description": "Top-level `cargo metadata --format-version 1` document.\n\nCaptures workspace-level package and resolve information emitted by Cargo.",
   "properties": {
     "metadata": {
       "anyOf": [
