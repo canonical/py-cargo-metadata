@@ -1,15 +1,22 @@
 import json
 from pathlib import Path
 
+from pydantic.json_schema import GenerateJsonSchema
 import pytest
 
 from cargo_metadata import Metadata
+
+
+class GenerateJsonSchemaNoTitles(GenerateJsonSchema):
+    def field_title_should_be_set(self, _) -> bool: # pyright: ignore[reportIncompatibleMethodOverride]
+        return False
+
 
 SNAPSHOT_PATH = Path(__file__).parent / "snapshots" / "metadata.schema.json"
 
 
 def test_metadata_json_schema_snapshot(pytestconfig: pytest.Config) -> None:
-    schema = Metadata.model_json_schema()
+    schema = Metadata.model_json_schema(schema_generator=GenerateJsonSchemaNoTitles)
     snapshot_text = json.dumps(schema, indent=2, sort_keys=True) + "\n"
 
     if pytestconfig.getoption("--snapshot-update") or not SNAPSHOT_PATH.exists():
