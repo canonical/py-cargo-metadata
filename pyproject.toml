@@ -1,6 +1,6 @@
 [project]
 name = "cargo-metadata"
-version = "0.1.0"
+version = "1.0.0"
 description = "Pydantic types for cargo metadata output"
 readme = "README.md"
 authors = [
