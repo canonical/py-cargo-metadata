@@ -69,6 +69,26 @@ It does not provide:
 - custom Cargo invocation strategies beyond the exposed flags
 - higher-level dependency analysis helpers
 
+## Snapshot tests
+
+This repository includes a snapshot test for the Pydantic JSON schema of
+`cargo_metadata.Metadata` at `tests/snapshots/metadata.schema.json`.
+
+Run snapshot tests:
+
+```bash
+uv run pytest tests/test_schema_snapshot.py
+```
+
+Accept and update snapshots:
+
+```bash
+uv run pytest --snapshot-update
+```
+
+When the schema changes, the snapshot diff appears in git, making the change
+reviewable.
+
 ## Requirements
 
 - Python 3.12+

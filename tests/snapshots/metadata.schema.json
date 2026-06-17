@@ -1,0 +1,672 @@
+{
+  "$defs": {
+    "Dep": {
+      "additionalProperties": true,
+      "description": "A resolved dependency edge entry from `resolve.nodes[].deps`.\n\nRepresents one named edge and its package target in Cargo's resolved graph.",
+      "properties": {
+        "dep_kinds": {
+          "description": "Dependency-kind variants associated with this edge.",
+          "items": {
+            "$ref": "#/$defs/DepKind"
+          },
+          "title": "Dep Kinds",
+          "type": "array"
+        },
+        "name": {
+          "description": "Dependency library name as used by the package.",
+          "title": "Name",
+          "type": "string"
+        },
+        "pkg": {
+          "description": "Resolved package ID of the dependency target.",
+          "title": "Pkg",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "pkg"
+      ],
+      "title": "Dep",
+      "type": "object"
+    },
+    "DepKind": {
+      "additionalProperties": true,
+      "description": "A dependency-kind selector from `resolve.nodes[].deps[].dep_kinds`.\n\nCaptures the dependency kind and optional target filter used in graph resolution.",
+      "properties": {
+        "kind": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Dependency kind: null for normal, or `dev`/`build`.",
+          "title": "Kind"
+        },
+        "target": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional target cfg expression for this dependency kind.",
+          "title": "Target"
+        }
+      },
+      "title": "DepKind",
+      "type": "object"
+    },
+    "Dependency": {
+      "additionalProperties": true,
+      "description": "A dependency entry from `package.dependencies` in cargo metadata output.\n\nMirrors Cargo's `DependencyObject` for format version 1.",
+      "properties": {
+        "features": {
+          "description": "Explicitly enabled feature names for this dependency.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Features",
+          "type": "array"
+        },
+        "kind": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Dependency kind: null for normal, or `dev`/`build`.",
+          "title": "Kind"
+        },
+        "name": {
+          "description": "Dependency package name as declared in Cargo metadata.",
+          "title": "Name",
+          "type": "string"
+        },
+        "optional": {
+          "description": "Whether this dependency is optional.",
+          "title": "Optional",
+          "type": "boolean"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filesystem path for path dependencies, when present.",
+          "title": "Path"
+        },
+        "registry": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Registry URL for registry dependencies, if explicitly set.",
+          "title": "Registry"
+        },
+        "rename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Renamed crate name used in Cargo.toml, if present.",
+          "title": "Rename"
+        },
+        "req": {
+          "description": "Version requirement string such as `^1.0` or `*`.",
+          "title": "Req",
+          "type": "string"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Source identifier, or null for path/workspace dependencies.",
+          "title": "Source"
+        },
+        "target": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Target cfg expression restricting this dependency, if present.",
+          "title": "Target"
+        },
+        "uses_default_features": {
+          "description": "Whether default features of this dependency are enabled.",
+          "title": "Uses Default Features",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "req",
+        "optional",
+        "uses_default_features"
+      ],
+      "title": "Dependency",
+      "type": "object"
+    },
+    "Node": {
+      "additionalProperties": true,
+      "description": "A node entry from `resolve.nodes` in the resolved dependency graph.",
+      "properties": {
+        "dependencies": {
+          "description": "Resolved dependency package IDs in simple edge form.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "deps": {
+          "description": "Resolved dependency edges with names and dependency kinds.",
+          "items": {
+            "$ref": "#/$defs/Dep"
+          },
+          "title": "Deps",
+          "type": "array"
+        },
+        "features": {
+          "description": "Activated features for this package in the resolve graph.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Features",
+          "type": "array"
+        },
+        "id": {
+          "description": "Package ID for this resolved graph node.",
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "Node",
+      "type": "object"
+    },
+    "Package": {
+      "additionalProperties": true,
+      "description": "A package entry from the top-level `packages` array.\n\nMirrors Cargo's `PackageObject` for format version 1.",
+      "properties": {
+        "authors": {
+          "description": "Author strings from Cargo metadata.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Authors",
+          "type": "array"
+        },
+        "categories": {
+          "description": "crates.io categories for the package.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Categories",
+          "type": "array"
+        },
+        "default_run": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default binary target name for `cargo run`, if set.",
+          "title": "Default Run"
+        },
+        "dependencies": {
+          "description": "Dependencies declared by this package.",
+          "items": {
+            "$ref": "#/$defs/Dependency"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Package description text.",
+          "title": "Description"
+        },
+        "documentation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Documentation URL, if present.",
+          "title": "Documentation"
+        },
+        "edition": {
+          "description": "Rust edition declared for the package.",
+          "title": "Edition",
+          "type": "string"
+        },
+        "features": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "description": "Feature map from feature name to enabled feature/dependency entries.",
+          "title": "Features",
+          "type": "object"
+        },
+        "homepage": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Homepage URL, if present.",
+          "title": "Homepage"
+        },
+        "id": {
+          "description": "Opaque Cargo package ID specification string.",
+          "title": "Id",
+          "type": "string"
+        },
+        "keywords": {
+          "description": "crates.io keywords for the package.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Keywords",
+          "type": "array"
+        },
+        "license": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "License expression from Cargo.toml.",
+          "title": "License"
+        },
+        "license_file": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "License file path, if configured.",
+          "title": "License File"
+        },
+        "links": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Native library name linked by this package when using a `links` key.",
+          "title": "Links"
+        },
+        "manifest_path": {
+          "description": "Absolute path to the package Cargo.toml.",
+          "title": "Manifest Path",
+          "type": "string"
+        },
+        "metadata": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Raw `[package.metadata]` table contents, if present.",
+          "title": "Metadata"
+        },
+        "name": {
+          "description": "Cargo package name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "publish": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Allowed registries for publishing; empty list means publishing is forbidden.",
+          "title": "Publish"
+        },
+        "readme": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Readme file path or identifier, if set.",
+          "title": "Readme"
+        },
+        "repository": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Repository URL, if present.",
+          "title": "Repository"
+        },
+        "rust_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Minimum supported Rust version, if set.",
+          "title": "Rust Version"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Package source identifier, or null for path/workspace packages.",
+          "title": "Source"
+        },
+        "targets": {
+          "description": "Build targets produced by this package.",
+          "items": {
+            "$ref": "#/$defs/Target"
+          },
+          "title": "Targets",
+          "type": "array"
+        },
+        "version": {
+          "description": "Package semantic version string.",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "id",
+        "manifest_path",
+        "edition"
+      ],
+      "title": "Package",
+      "type": "object"
+    },
+    "Resolve": {
+      "additionalProperties": true,
+      "description": "The top-level resolve graph from cargo metadata output.\n\nThis section may be null when `--no-deps` is used.",
+      "properties": {
+        "nodes": {
+          "description": "Resolved dependency graph nodes.",
+          "items": {
+            "$ref": "#/$defs/Node"
+          },
+          "title": "Nodes",
+          "type": "array"
+        },
+        "root": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Package ID of the workspace root package, or null for virtual workspaces.",
+          "title": "Root"
+        }
+      },
+      "title": "Resolve",
+      "type": "object"
+    },
+    "Target": {
+      "additionalProperties": true,
+      "description": "A target entry from `package.targets` in cargo metadata output.\n\nMirrors Cargo's `TargetObject` for format version 1.",
+      "properties": {
+        "crate_types": {
+          "description": "Rust crate types emitted for this target, such as `bin` or `rlib`.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Crate Types",
+          "type": "array"
+        },
+        "doc": {
+          "default": true,
+          "description": "Whether docs are built for this target.",
+          "title": "Doc",
+          "type": "boolean"
+        },
+        "doctest": {
+          "default": true,
+          "description": "Whether doctests are enabled for this target.",
+          "title": "Doctest",
+          "type": "boolean"
+        },
+        "edition": {
+          "description": "Rust edition used by this target.",
+          "title": "Edition",
+          "type": "string"
+        },
+        "kind": {
+          "description": "Target kinds such as `lib`, `bin`, `example`, `test`, or `bench`.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Kind",
+          "type": "array"
+        },
+        "name": {
+          "description": "Target name as reported by Cargo.",
+          "title": "Name",
+          "type": "string"
+        },
+        "required-features": {
+          "description": "Feature names required for this target to build.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Required-Features",
+          "type": "array"
+        },
+        "src_path": {
+          "description": "Absolute source path to the target root file.",
+          "title": "Src Path",
+          "type": "string"
+        },
+        "test": {
+          "default": true,
+          "description": "Whether this target participates in test builds.",
+          "title": "Test",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "kind",
+        "src_path",
+        "edition"
+      ],
+      "title": "Target",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "description": "Top-level `cargo metadata --format-version 1` document.\n\nThis model captures workspace-level package and resolve information emitted by Cargo.",
+  "properties": {
+    "metadata": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Workspace-level `[metadata]` table contents, if present.",
+      "title": "Metadata"
+    },
+    "packages": {
+      "description": "All packages included in metadata output.",
+      "items": {
+        "$ref": "#/$defs/Package"
+      },
+      "title": "Packages",
+      "type": "array"
+    },
+    "resolve": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Resolve"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Resolved dependency graph section; null when dependency resolution is omitted."
+    },
+    "target_directory": {
+      "description": "Absolute path to Cargo's target directory.",
+      "title": "Target Directory",
+      "type": "string"
+    },
+    "version": {
+      "const": 1,
+      "description": "Cargo metadata format version (currently fixed to 1).",
+      "title": "Version",
+      "type": "integer"
+    },
+    "workspace_default_members": {
+      "description": "Package IDs selected as default workspace members.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Workspace Default Members",
+      "type": "array"
+    },
+    "workspace_members": {
+      "description": "Package IDs for all workspace members.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Workspace Members",
+      "type": "array"
+    },
+    "workspace_root": {
+      "description": "Absolute path to the Cargo workspace root.",
+      "title": "Workspace Root",
+      "type": "string"
+    }
+  },
+  "required": [
+    "version",
+    "workspace_root",
+    "target_directory",
+    "workspace_members",
+    "workspace_default_members",
+    "packages"
+  ],
+  "title": "Metadata",
+  "type": "object"
+}
