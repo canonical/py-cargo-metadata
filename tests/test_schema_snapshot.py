@@ -8,7 +8,7 @@ from cargo_metadata import Metadata
 
 
 class GenerateJsonSchemaNoTitles(GenerateJsonSchema):
-    def field_title_should_be_set(self, _) -> bool: # pyright: ignore[reportIncompatibleMethodOverride]
+    def field_title_should_be_set(self, _) -> bool:  # pyright: ignore[reportIncompatibleMethodOverride]
         return False
 
 
