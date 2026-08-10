@@ -1,6 +1,5 @@
 import json
 from pathlib import Path
-from typing import override
 
 import pytest
 from pydantic.json_schema import GenerateJsonSchema
@@ -9,7 +8,6 @@ from cargo_metadata import Metadata
 
 
 class GenerateJsonSchemaNoTitles(GenerateJsonSchema):
-    @override
     def field_title_should_be_set(self, _) -> bool:  # pyright: ignore[reportIncompatibleMethodOverride]
         return False
 
