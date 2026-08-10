@@ -78,7 +78,7 @@ reviewable.
 
 ## Requirements
 
-- Python 3.12+
+- Python 3.10+
 - `cargo` available on `PATH` when using `run(...)`
 
 All versions of Cargo should work. However, we do not regularly test compatibility

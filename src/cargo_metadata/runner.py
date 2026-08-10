@@ -20,7 +20,7 @@ def run(
     format_version: Literal[1] = 1,
 ) -> Metadata:
     """Invoke `cargo metadata` and return a parsed Metadata object."""
-    cmd = ["cargo", "metadata", "--format-version", "1"]
+    cmd = ["cargo", "metadata", "--format-version", str(format_version)]
     if manifest_path is not None:
         cmd += ["--manifest-path", str(manifest_path)]
     if no_deps:
