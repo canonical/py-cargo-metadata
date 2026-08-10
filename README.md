@@ -16,7 +16,8 @@ pip install cargo-metadata
 - `run(...)` helper to execute `cargo metadata` and parse the result
 
 Unknown fields from Cargo are allowed and preserved on parsed model instances,
-which helps with forward compatibility when Cargo adds fields.
+which helps with forward compatibility when Cargo adds fields. Refer to the
+Pydantic documentation for how to interact with unknown fields.
 
 ## Quick start
 
@@ -74,13 +75,13 @@ It does not provide:
 This repository includes a snapshot test for the Pydantic JSON schema of
 `cargo_metadata.Metadata` at `tests/snapshots/metadata.schema.json`.
 
-Run snapshot tests:
+Run snapshot tests only:
 
 ```bash
 uv run pytest tests/test_schema_snapshot.py
 ```
 
-Accept and update snapshots:
+Accept and update snapshots when running tests:
 
 ```bash
 uv run pytest --snapshot-update
@@ -93,3 +94,8 @@ reviewable.
 
 - Python 3.12+
 - `cargo` available on `PATH` when using `run(...)`
+
+## LLM disclosure
+
+LLMs were used to generate code used in this package. All code has been fully
+signed off, owned, and tested by the human(s) running the LLM tooling. 
