@@ -5,17 +5,14 @@ description = "Pydantic types for cargo metadata output"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
 license-files = ["LICENSE-MIT", "LICENSE-APACHE"]
-authors = [
-    { name = "Crystal Durham", email = "crystal.durham@canonical.com" }
-]
-requires-python = ">=3.12"
-dependencies = [
-    "pydantic>=2.7",
-]
+authors = [{ name = "Crystal Durham", email = "crystal.durham@canonical.com" }]
+requires-python = ">=3.10"
+dependencies = ["pydantic>=2.13.4"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Build Tools",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -32,17 +29,22 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
-    "pytest>=8.0",
-    "pytest-subprocess>=1.5",
-    "ruff>=0.12.0",
+    "pytest>=9.1.1,<10.0.0",
+    "pytest-subprocess>=1.6.0,<2.0.0",
+    "ruff>=0.16.2,<1.0.0",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
 
+[tool.ruff.format]
+docstring-code-format = true
+line-ending = "lf"
+quote-style = "double"
+
 [tool.ruff]
-target-version = "py312"
+target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
