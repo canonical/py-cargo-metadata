@@ -1,7 +1,7 @@
 import json
 import subprocess
 from pathlib import Path
-from typing import Optional
+from typing import Literal, Optional
 
 from .models import Metadata
 
@@ -17,6 +17,7 @@ def run(
     locked: bool = False,
     frozen: bool = False,
     offline: bool = False,
+    format_version: Literal[1] = 1,
 ) -> Metadata:
     """Invoke `cargo metadata` and return a parsed Metadata object."""
     cmd = ["cargo", "metadata", "--format-version", "1"]
