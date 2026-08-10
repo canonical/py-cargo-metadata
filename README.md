@@ -43,22 +43,8 @@ data = json.loads(raw_json)
 meta = Metadata.model_validate(data)
 
 for pkg in meta.packages:
-	print(pkg.name, pkg.version)
+    print(pkg.name, pkg.version)
 ```
-
-## Runner options
-
-`run(...)` exposes common `cargo metadata` flags:
-
-- `manifest_path`
-- `no_deps`
-- `filter_platform`
-- `features`
-- `all_features`
-- `no_default_features`
-- `locked`
-- `frozen`
-- `offline`
 
 ## Scope
 
@@ -94,6 +80,9 @@ reviewable.
 
 - Python 3.12+
 - `cargo` available on `PATH` when using `run(...)`
+
+All versions of Cargo should work. However, we do not regularly test compatibility
+with old versions of Cargo.
 
 ## LLM disclosure
 
