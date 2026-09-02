@@ -1,6 +1,6 @@
 import json
 import subprocess
-from pathlib import Path
+from pathlib import PurePath
 from typing import Literal, Optional
 
 from .models import Metadata
@@ -8,7 +8,7 @@ from .models import Metadata
 
 def run(
     *,
-    manifest_path: Optional[str | Path] = None,
+    manifest_path: Optional[str | PurePath] = None,
     no_deps: bool = False,
     filter_platform: Optional[str] = None,
     features: Optional[list[str]] = None,
