@@ -265,3 +265,49 @@ def test_publish_null_and_empty_list() -> None:
 
     assert null_publish_meta.packages[0].publish is None
     assert empty_publish_meta.packages[0].publish == []
+
+
+def test_root_package_with_resolve_present() -> None:
+    meta = Metadata.model_validate(FULL_METADATA)
+
+    root = meta.root_package()
+
+    assert root is not None
+    assert root.id == FULL_METADATA["resolve"]["root"]
+
+
+def test_root_package_with_resolve_null_uses_manifest_path() -> None:
+    meta = Metadata.model_validate(MINIMAL_METADATA)
+
+    root = meta.root_package()
+
+    assert root is not None
+    assert root.manifest_path == f"{MINIMAL_METADATA['workspace_root']}/Cargo.toml"
+
+
+def test_workspace_package_helpers() -> None:
+    non_member_package: dict[str, Any] = {
+        **MINIMAL_METADATA["packages"][0],
+        "id": "file:///tmp/external#1.0.0",
+        "name": "external",
+        "manifest_path": "/tmp/external/Cargo.toml",
+        "targets": [
+            {
+                **MINIMAL_METADATA["packages"][0]["targets"][0],
+                "name": "external",
+                "src_path": "/tmp/external/src/lib.rs",
+            }
+        ],
+    }
+    data: dict[str, Any] = {
+        **MINIMAL_METADATA,
+        "workspace_default_members": [],
+        "packages": [*MINIMAL_METADATA["packages"], non_member_package],
+    }
+    meta = Metadata.model_validate(data)
+
+    workspace_packages = meta.workspace_packages()
+    default_packages = meta.workspace_default_packages()
+
+    assert [pkg.id for pkg in workspace_packages] == MINIMAL_METADATA["workspace_members"]
+    assert default_packages == []
