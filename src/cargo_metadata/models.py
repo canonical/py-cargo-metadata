@@ -1,3 +1,4 @@
+from pathlib import PurePath
 from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, Field
@@ -196,3 +197,37 @@ class Metadata(BaseModel, extra="allow", use_attribute_docstrings=True):
     metadata: Optional[dict[str, Any]] = None
     """Workspace-level `[metadata]` table contents, if present."""
 
+    def root_package(self) -> Package | None:
+        """Return the root package for this workspace, if present."""
+        if self.resolve is not None:
+            return self._package_by_id(self.resolve.root)
+        else:
+            return self._package_by_manifest_path(
+                PurePath(self.workspace_root) / "Cargo.toml"
+            )
+
+    def workspace_packages(self) -> list[Package]:
+        """Return the list of packages that are members of this workspace."""
+        return [pkg for pkg in self.packages if pkg.id in self.workspace_members]
+
+    def workspace_default_packages(self) -> list[Package]:
+        """Return the list of packages that are default members of this workspace."""
+        return [
+            pkg for pkg in self.packages if pkg.id in self.workspace_default_members
+        ]
+
+    def _package_by_id(self, package_id: str | None) -> Package | None:
+        """Return the Package object with the given package ID, if present."""
+        for pkg in self.packages:
+            if pkg.id == package_id:
+                return pkg
+        return None
+
+    def _package_by_manifest_path(
+        self, manifest_path: str | PurePath | None
+    ) -> Package | None:
+        """Return the Package object with the given manifest path, if present."""
+        for pkg in self.packages:
+            if pkg.manifest_path == manifest_path:
+                return pkg
+        return None
