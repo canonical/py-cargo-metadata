@@ -228,6 +228,6 @@ class Metadata(BaseModel, extra="allow", use_attribute_docstrings=True):
     ) -> Package | None:
         """Return the Package object with the given manifest path, if present."""
         for pkg in self.packages:
-            if pkg.manifest_path == manifest_path:
+            if pkg.manifest_path == str(manifest_path):
                 return pkg
         return None
