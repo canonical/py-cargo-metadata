@@ -309,5 +309,7 @@ def test_workspace_package_helpers() -> None:
     workspace_packages = meta.workspace_packages()
     default_packages = meta.workspace_default_packages()
 
-    assert [pkg.id for pkg in workspace_packages] == MINIMAL_METADATA["workspace_members"]
+    assert [pkg.id for pkg in workspace_packages] == MINIMAL_METADATA[
+        "workspace_members"
+    ]
     assert default_packages == []
