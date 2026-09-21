@@ -6,6 +6,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   pypi-publish:
     name: Publish to PyPI
@@ -13,6 +17,7 @@ jobs:
     environment: pypi
     permissions:
       id-token: write
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -21,3 +26,8 @@ jobs:
       - run: uv build
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Tag release
+        run: |
+          version="$(uv version --short)"
+          git tag "$version"
+          git push origin "$version"
