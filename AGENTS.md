@@ -47,14 +47,10 @@ dependency. Managed with uv (`uv_build` backend, `uv.lock` committed).
 - Keep `run()` a thin wrapper over exposed cargo flags. No project
   mutation or higher-level analysis APIs (see README scope).
 
-`pytest-subprocess` is a dev dependency and available for faking
-`subprocess` calls in runner tests.
-
 ## Cargo metadata reference
 
 - Command docs: https://doc.rust-lang.org/cargo/commands/cargo-metadata.html
 - Package ID spec: https://doc.rust-lang.org/cargo/reference/pkgid-spec.html
-- Format version 1 is the only version; `Metadata.version` is `Literal[1]`.
 - Within a format version Cargo may add fields and enum values but will
   not change the meaning of existing fields.
 
@@ -64,9 +60,8 @@ dependency. Managed with uv (`uv_build` backend, `uv.lock` committed).
   under `## [Unreleased]` in the same PR.
 - Version lives in `pyproject.toml`; releases are tagged with the bare
   version (e.g. `1.1.0`).
-- Publishing is manual (`workflow_dispatch` on
-  `.github/workflows/publish.yml`): `uv build`, then trusted publishing to
-  PyPI.
+- Publishing goes through `.github/workflows/publish.yml`: `uv build`,
+  then trusted publishing to PyPI.
 
 ## Git
 
