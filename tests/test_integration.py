@@ -1,6 +1,4 @@
-import re
 import shutil
-import subprocess
 from pathlib import Path
 
 import pytest
@@ -29,16 +27,4 @@ version = "0.1.0"
     pkg = meta.packages[0]
     assert pkg.name == "hello"
     assert pkg.version == "0.1.0"
-
-    cargo_version = subprocess.run(
-        ["cargo", "--version"],
-        capture_output=True,
-        text=True,
-        check=True,
-    ).stdout.strip()
-    version_match = re.match(r"cargo (\d)+\.(\d+)\.(\d+)", cargo_version)
-    assert version_match is not None
-    minor_version = int(version_match.group(2))
-
-    if minor_version >= 71:
-        assert meta.workspace_default_members is not None
+    assert meta.workspace_default_members == [pkg.id]

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Expand package metadata: add `keywords`, classifiers for the full supported
   Python version range and OS independence, and `Homepage`/`Changelog` URLs
 * Internal development workflow improvements
+* Provide default `Metadata.workspace_default_members` for Cargo versions before 1.71
 
 ## [1.1.0]
 
