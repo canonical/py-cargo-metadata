@@ -29,8 +29,35 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
-        rust-version: ["stable"]
+        python-version: ["3.14"]
+        rust-version:
+          - "1.30" # resolve.nodes.deps, required-features
+          - "1.33" # links
+          - "1.35" # no null in resolve.nodes.deps for non-lib deps
+          - "1.37" # doctest
+          - "1.39" # publish
+          - "1.40" # --filter-platform
+          - "1.41" # dep_kinds kind/platform
+          - "1.42" # dep_kinds de-duplication
+          - "1.47" # test, deterministic ordering
+          - "1.49" # homepage, documentation
+          - "1.50" # doc
+          - "1.51" # path
+          - "1.55" # default_run
+          - "1.58" # rust_version
+          - "1.71" # workspace_default_members
+          - "1.79" # underscores in inferred lib names
+        include:
+          - python-version: "3.10"
+            rust-version: "stable"
+          - python-version: "3.11"
+            rust-version: "stable"
+          - python-version: "3.12"
+            rust-version: "stable"
+          - python-version: "3.13"
+            rust-version: "stable"
+          - python-version: "3.14"
+            rust-version: "stable"
     steps:
       - name: Checkout
         uses: actions/checkout@v5
