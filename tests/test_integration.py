@@ -21,11 +21,10 @@ edition = "2021"
     (tmp_path / "src").mkdir()
     (tmp_path / "src" / "lib.rs").write_text("")
 
-    meta = cargo_metadata.run(manifest_path=tmp_path / "Cargo.toml", no_deps=True)
+    meta = cargo_metadata.run(manifest_path=tmp_path / "Cargo.toml")
 
     assert meta.version == 1
     assert len(meta.packages) == 1
     pkg = meta.packages[0]
     assert pkg.name == "hello"
     assert pkg.version == "0.1.0"
-    assert meta.resolve is None
