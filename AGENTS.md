@@ -13,6 +13,7 @@ dependency. Managed with uv (`uv_build` backend, `uv.lock` committed).
 
 - Test: `uv run pytest`
 - Lint (CI gate): `uv run ruff check .`
+- Type check (CI gate): `uv run pyright`
 - Update schema snapshot: `uv run pytest --snapshot-update`
 
 ## Layout
