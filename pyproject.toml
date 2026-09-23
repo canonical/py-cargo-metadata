@@ -1,6 +1,6 @@
 [project]
 name = "cargo-metadata"
-version = "1.1.0"
+version = "1.1.1"
 description = "Pydantic types for cargo metadata output"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
