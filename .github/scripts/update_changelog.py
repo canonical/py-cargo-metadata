@@ -20,6 +20,10 @@ else:
 if not any(entry.strip() for entry in lines[unreleased + 1 : end]):
     raise SystemExit("CHANGELOG.md: [Unreleased] is empty; nothing to release")
 
+notes = "".join(lines[unreleased + 1 : end]).strip()
+if len(sys.argv) > 3:
+    Path(sys.argv[3]).write_text(notes + "\n")
+
 lines[unreleased] = f"## [{new}]\n"
 lines[unreleased:unreleased] = ["## [Unreleased]\n", "\n"]
 

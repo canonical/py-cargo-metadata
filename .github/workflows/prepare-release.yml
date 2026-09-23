@@ -38,38 +38,24 @@ jobs:
       - name: Record new version
         run: echo "NEW_VERSION=$(uv version --short)" >> "$GITHUB_ENV"
       - name: Update changelog
-        run: python3 .github/scripts/update_changelog.py "$OLD_VERSION" "$NEW_VERSION"
-      - name: Commit to release branch
+        run: python3 .github/scripts/update_changelog.py "$OLD_VERSION" "$NEW_VERSION" release-notes.md
+      - name: Record release notes
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git switch -c "prepare-release/$NEW_VERSION"
-          git add pyproject.toml uv.lock CHANGELOG.md
-          git commit -m "Prepare release $NEW_VERSION"
-          git push --force origin "prepare-release/$NEW_VERSION"
+          delimiter="$(uuidgen)"
+          {
+            echo "RELEASE_NOTES<<$delimiter"
+            cat release-notes.md
+            echo "$delimiter"
+          }
       - name: Open pull request
-        env:
-          GH_TOKEN: ${{ github.token }}
-          BASE: ${{ github.ref_name }}
-          BUMP: ${{ inputs.bump }}
-        run: |
-          body=$(cat <<EOF
-          Automated release preparation: bump the version from $OLD_VERSION to
-          $NEW_VERSION (uv version --bump $BUMP) and roll the [Unreleased]
-          changelog entries into the [$NEW_VERSION] section.
-
-          After merging, dispatch the Publish workflow to upload to PyPI and tag
-          the release.
-          EOF
-          )
-          if gh pr view "prepare-release/$NEW_VERSION" >/dev/null 2>&1; then
-            gh pr edit "prepare-release/$NEW_VERSION" \
-              --title "Prepare release $NEW_VERSION" \
-              --body "$body"
-          else
-            gh pr create \
-              --base "$BASE" \
-              --head "prepare-release/$NEW_VERSION" \
-              --title "Prepare release $NEW_VERSION" \
-              --body "$body"
-          fi
+        uses: peter-evans/create-pull-request@v8.1.1
+        with:
+          sign-commits: true
+          branch: prepare-release/${{ env.NEW_VERSION }}
+          add-paths: |
+            pyproject.toml
+            uv.lock
+            CHANGELOG.md
+          commit-message: Prepare release ${{ env.NEW_VERSION }}
+          title: Release ${{ env.NEW_VERSION }}
+          body: ${{ env.RELEASE_NOTES }}
