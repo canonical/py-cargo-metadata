@@ -174,6 +174,15 @@ class Resolve(BaseModel, extra="allow", use_attribute_docstrings=True):
     """Resolved dependency graph nodes."""
 
 
+def _default_factory_workspace_default_members(data: dict[str, Any]) -> list[str]:
+    for package in data["packages"]:
+        if package.manifest_path == str(
+            PurePath(data["workspace_root"]) / "Cargo.toml"
+        ):
+            return [package.id]
+    return data["workspace_members"]
+
+
 class Metadata(BaseModel, extra="allow", use_attribute_docstrings=True):
     """Top-level `cargo metadata --format-version 1` document.
 
@@ -186,12 +195,14 @@ class Metadata(BaseModel, extra="allow", use_attribute_docstrings=True):
     """Absolute path to the Cargo workspace root."""
     target_directory: str
     """Absolute path to Cargo's target directory."""
-    workspace_members: list[str]
-    """Package IDs for all workspace members."""
-    workspace_default_members: Optional[list[str]] = None
-    """Package IDs selected as default workspace members. (MSRV: 1.71)"""
     packages: list[Package]
     """All packages included in metadata output."""
+    workspace_members: list[str]
+    """Package IDs for all workspace members."""
+    workspace_default_members: list[str] = Field(
+        default_factory=_default_factory_workspace_default_members
+    )
+    """Package IDs selected as default workspace members."""
     resolve: Optional[Resolve] = None
     """Resolved dependency graph section; null when dependency resolution is omitted."""
     metadata: Optional[dict[str, Any]] = None
@@ -211,11 +222,7 @@ class Metadata(BaseModel, extra="allow", use_attribute_docstrings=True):
         return [pkg for pkg in self.packages if pkg.id in self.workspace_members]
 
     def workspace_default_packages(self) -> Optional[list[Package]]:
-        """Return the list of packages that are default members of this workspace.
-
-        MSRV: 1.71"""
-        if self.workspace_default_members is None:
-            return None
+        """Return the list of packages that are default members of this workspace."""
         return [
             pkg for pkg in self.packages if pkg.id in self.workspace_default_members
         ]
