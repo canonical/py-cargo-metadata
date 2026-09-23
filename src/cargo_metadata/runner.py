@@ -1,17 +1,17 @@
 import json
 import subprocess
 from pathlib import PurePath
-from typing import Literal, Optional
+from typing import Literal
 
 from .models import Metadata
 
 
 def run(
     *,
-    manifest_path: Optional[str | PurePath] = None,
+    manifest_path: str | PurePath | None = None,
     no_deps: bool = False,
-    filter_platform: Optional[str] = None,
-    features: Optional[list[str]] = None,
+    filter_platform: str | None = None,
+    features: list[str] | None = None,
     all_features: bool = False,
     no_default_features: bool = False,
     locked: bool = False,

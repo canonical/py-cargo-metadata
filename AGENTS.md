@@ -13,6 +13,7 @@ dependency. Managed with uv (`uv_build` backend, `uv.lock` committed).
 
 - Test: `uv run pytest`
 - Lint (CI gate): `uv run ruff check .`
+- Type check (CI gate): `uv run pyright`
 - Update schema snapshot: `uv run pytest --snapshot-update`
 
 ## Layout
@@ -36,6 +37,8 @@ dependency. Managed with uv (`uv_build` backend, `uv.lock` committed).
   run `--snapshot-update` and include the snapshot diff in the change.
 - Non-identifier JSON keys use aliases: e.g. `Target.required_features`
   with `alias="required-features"` and `validate_by_alias=True`.
+- Nullable annotations: model fields use `Optional[X]`; non-model
+  signatures (`run()`, helper methods) use `X | None`.
 - Only fields guaranteed by format version 1 are required. Fields Cargo
   added later (or may add) default to `None`/empty collection.
 - Package IDs, source IDs (`registry+...`, `git+...`, `sparse+...`), and
@@ -47,14 +50,10 @@ dependency. Managed with uv (`uv_build` backend, `uv.lock` committed).
 - Keep `run()` a thin wrapper over exposed cargo flags. No project
   mutation or higher-level analysis APIs (see README scope).
 
-`pytest-subprocess` is a dev dependency and available for faking
-`subprocess` calls in runner tests.
-
 ## Cargo metadata reference
 
 - Command docs: https://doc.rust-lang.org/cargo/commands/cargo-metadata.html
 - Package ID spec: https://doc.rust-lang.org/cargo/reference/pkgid-spec.html
-- Format version 1 is the only version; `Metadata.version` is `Literal[1]`.
 - Within a format version Cargo may add fields and enum values but will
   not change the meaning of existing fields.
 
@@ -64,9 +63,8 @@ dependency. Managed with uv (`uv_build` backend, `uv.lock` committed).
   under `## [Unreleased]` in the same PR.
 - Version lives in `pyproject.toml`; releases are tagged with the bare
   version (e.g. `1.1.0`).
-- Publishing is manual (`workflow_dispatch` on
-  `.github/workflows/publish.yml`): `uv build`, then trusted publishing to
-  PyPI.
+- Publishing goes through `.github/workflows/publish.yml`: `uv build`,
+  then trusted publishing to PyPI.
 
 ## Git
 

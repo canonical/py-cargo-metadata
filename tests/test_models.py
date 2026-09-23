@@ -1,5 +1,8 @@
 from typing import Any
 
+import pytest
+from pydantic import ValidationError
+
 from cargo_metadata import Metadata
 
 MINIMAL_METADATA: dict[str, Any] = {
@@ -313,3 +316,70 @@ def test_workspace_package_helpers() -> None:
         "workspace_members"
     ]
     assert default_packages == []
+
+
+def _member_package_fixture(name: str) -> dict[str, Any]:
+    return {
+        "name": name,
+        "version": "0.1.0",
+        "id": f"file:///tmp/myproject/{name}#0.1.0",
+        "manifest_path": f"/tmp/myproject/{name}/Cargo.toml",
+        "edition": "2021",
+    }
+
+
+def test_workspace_default_members_default_to_root_package() -> None:
+    data: dict[str, Any] = {
+        key: value
+        for key, value in MINIMAL_METADATA.items()
+        if key != "workspace_default_members"
+    }
+    data["workspace_members"] = [
+        *data["workspace_members"],
+        "file:///tmp/myproject/member#0.1.0",
+    ]
+    data["packages"] = [
+        data["packages"][0],
+        _member_package_fixture("member"),
+    ]
+
+    meta = Metadata.model_validate(data)
+
+    assert meta.workspace_default_members == [MINIMAL_METADATA["packages"][0]["id"]]
+
+
+def test_workspace_default_members_default_to_members_for_virtual_workspace() -> None:
+    member_a = _member_package_fixture("a")
+    member_b = _member_package_fixture("b")
+    data: dict[str, Any] = {
+        key: value
+        for key, value in MINIMAL_METADATA.items()
+        if key != "workspace_default_members"
+    }
+    data["workspace_members"] = [member_a["id"], member_b["id"]]
+    data["packages"] = [member_a, member_b]
+
+    meta = Metadata.model_validate(data)
+
+    assert meta.workspace_default_members == data["workspace_members"]
+
+
+def test_workspace_default_members_explicit_value_preserved() -> None:
+    data: dict[str, Any] = {**MINIMAL_METADATA, "workspace_default_members": []}
+
+    meta = Metadata.model_validate(data)
+
+    assert meta.workspace_default_members == []
+
+
+def test_missing_packages_reports_validation_error() -> None:
+    data: dict[str, Any] = {
+        key: value
+        for key, value in MINIMAL_METADATA.items()
+        if key not in ("packages", "workspace_default_members")
+    }
+
+    with pytest.raises(ValidationError) as excinfo:
+        Metadata.model_validate(data)
+
+    assert any(error["loc"] == ("packages",) for error in excinfo.value.errors())

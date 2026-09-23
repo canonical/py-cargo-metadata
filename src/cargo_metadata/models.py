@@ -175,12 +175,18 @@ class Resolve(BaseModel, extra="allow", use_attribute_docstrings=True):
 
 
 def _default_factory_workspace_default_members(data: dict[str, Any]) -> list[str]:
-    for package in data["packages"]:
-        if package.manifest_path == str(
+    """Derive the `workspace_default_members` field from the `packages`,
+    `workspace_root`, and `workspace_members` fields, for Cargo before 1.71,
+    when this field did not exist.
+
+    To be available here, those fields must appear before
+    `workspace_default_members` in the model definition."""
+    for package in data.get("packages", []):
+        if data.get("workspace_root") and package.manifest_path == str(
             PurePath(data["workspace_root"]) / "Cargo.toml"
         ):
             return [package.id]
-    return data["workspace_members"]
+    return data.get("workspace_members", [])
 
 
 class Metadata(BaseModel, extra="allow", use_attribute_docstrings=True):
@@ -221,7 +227,7 @@ class Metadata(BaseModel, extra="allow", use_attribute_docstrings=True):
         """Return the list of packages that are members of this workspace."""
         return [pkg for pkg in self.packages if pkg.id in self.workspace_members]
 
-    def workspace_default_packages(self) -> Optional[list[Package]]:
+    def workspace_default_packages(self) -> list[Package]:
         """Return the list of packages that are default members of this workspace."""
         return [
             pkg for pkg in self.packages if pkg.id in self.workspace_default_members
