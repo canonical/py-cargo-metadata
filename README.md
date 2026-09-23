@@ -81,8 +81,8 @@ reviewable.
 - Python 3.10+
 - `cargo` available on `PATH` when using `run(...)`
 
-All versions of Cargo should work. However, we do not regularly test compatibility
-with old versions of Cargo.
+All versions of Cargo should work. See Cargo's documentation for the semantics
+of metadata fields and the first Cargo version to report them.
 
 ## LLM disclosure
 

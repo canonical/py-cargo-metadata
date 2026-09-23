@@ -188,8 +188,8 @@ class Metadata(BaseModel, extra="allow", use_attribute_docstrings=True):
     """Absolute path to Cargo's target directory."""
     workspace_members: list[str]
     """Package IDs for all workspace members."""
-    workspace_default_members: list[str]
-    """Package IDs selected as default workspace members."""
+    workspace_default_members: Optional[list[str]] = None
+    """Package IDs selected as default workspace members. (MSRV: 1.71)"""
     packages: list[Package]
     """All packages included in metadata output."""
     resolve: Optional[Resolve] = None
@@ -210,8 +210,12 @@ class Metadata(BaseModel, extra="allow", use_attribute_docstrings=True):
         """Return the list of packages that are members of this workspace."""
         return [pkg for pkg in self.packages if pkg.id in self.workspace_members]
 
-    def workspace_default_packages(self) -> list[Package]:
-        """Return the list of packages that are default members of this workspace."""
+    def workspace_default_packages(self) -> Optional[list[Package]]:
+        """Return the list of packages that are default members of this workspace.
+
+        MSRV: 1.71"""
+        if self.workspace_default_members is None:
+            return None
         return [
             pkg for pkg in self.packages if pkg.id in self.workspace_default_members
         ]
