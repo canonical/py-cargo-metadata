@@ -175,12 +175,12 @@ class Resolve(BaseModel, extra="allow", use_attribute_docstrings=True):
 
 
 def _default_factory_workspace_default_members(data: dict[str, Any]) -> list[str]:
-    for package in data["packages"]:
-        if package.manifest_path == str(
+    for package in data.get("packages", []):
+        if data.get("workspace_root") and package.manifest_path == str(
             PurePath(data["workspace_root"]) / "Cargo.toml"
         ):
             return [package.id]
-    return data["workspace_members"]
+    return data.get("workspace_members", [])
 
 
 class Metadata(BaseModel, extra="allow", use_attribute_docstrings=True):
