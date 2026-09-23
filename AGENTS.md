@@ -37,6 +37,8 @@ dependency. Managed with uv (`uv_build` backend, `uv.lock` committed).
   run `--snapshot-update` and include the snapshot diff in the change.
 - Non-identifier JSON keys use aliases: e.g. `Target.required_features`
   with `alias="required-features"` and `validate_by_alias=True`.
+- Nullable annotations: model fields use `Optional[X]`; non-model
+  signatures (`run()`, helper methods) use `X | None`.
 - Only fields guaranteed by format version 1 are required. Fields Cargo
   added later (or may add) default to `None`/empty collection.
 - Package IDs, source IDs (`registry+...`, `git+...`, `sparse+...`), and
