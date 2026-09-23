@@ -221,7 +221,7 @@ class Metadata(BaseModel, extra="allow", use_attribute_docstrings=True):
         """Return the list of packages that are members of this workspace."""
         return [pkg for pkg in self.packages if pkg.id in self.workspace_members]
 
-    def workspace_default_packages(self) -> Optional[list[Package]]:
+    def workspace_default_packages(self) -> list[Package]:
         """Return the list of packages that are default members of this workspace."""
         return [
             pkg for pkg in self.packages if pkg.id in self.workspace_default_members
