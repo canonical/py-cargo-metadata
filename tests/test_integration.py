@@ -15,7 +15,6 @@ def test_run_basic(tmp_path: Path) -> None:
 [package]
 name = "hello"
 version = "0.1.0"
-edition = "2021"
 """.lstrip()
     )
     (tmp_path / "src").mkdir()
