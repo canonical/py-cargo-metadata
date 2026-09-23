@@ -41,11 +41,12 @@ jobs:
         run: python3 .github/scripts/update_changelog.py "$OLD_VERSION" "$NEW_VERSION" release-notes.md
       - name: Record release notes
         run: |
+          delimiter="$(uuidgen)"
           {
-            echo "RELEASE_NOTES<<NOTES_EOF"
+            echo "RELEASE_NOTES<<$delimiter"
             cat release-notes.md
-            echo "NOTES_EOF"
-          } >> "$GITHUB_ENV"
+            echo "$delimiter"
+          }
       - name: Open pull request
         uses: peter-evans/create-pull-request@v8.1.1
         with:
