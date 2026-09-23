@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1]
+
 * Expand package metadata: add `keywords`, classifiers for the full supported
   Python version range and OS independence, and `Homepage`/`Changelog` URLs
 * Internal development workflow improvements
@@ -24,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial release.
 
-[Unreleased]: https://github.com/canonical/py-cargo-metadata/compare/1.1.0...HEAD
+[Unreleased]: https://github.com/canonical/py-cargo-metadata/compare/1.1.1...HEAD
+[1.1.1]: https://github.com/canonical/py-cargo-metadata/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/canonical/py-cargo-metadata/compare/1.0.0...1.1.0
 [1.0.0]: https://github.com/canonical/py-cargo-metadata/releases/tag/1.0.0
