@@ -29,5 +29,5 @@ jobs:
       - name: Tag release
         run: |
           version="$(uv version --short)"
-          git tag "$version"
+          git tag "$version" -m "$version" -m "Release $version"
           git push origin "$version"
