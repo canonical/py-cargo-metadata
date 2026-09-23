@@ -579,11 +579,19 @@
       "type": "integer"
     },
     "workspace_default_members": {
-      "description": "Package IDs selected as default workspace members.",
-      "items": {
-        "type": "string"
-      },
-      "type": "array"
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Package IDs selected as default workspace members. (MSRV: 1.71)"
     },
     "workspace_members": {
       "description": "Package IDs for all workspace members.",
@@ -602,7 +610,6 @@
     "workspace_root",
     "target_directory",
     "workspace_members",
-    "workspace_default_members",
     "packages"
   ],
   "title": "Metadata",
