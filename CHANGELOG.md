@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+* Internal workflow improvements
+
 ## [1.1.1]
 
 * Expand package metadata: add `keywords`, classifiers for the full supported

@@ -46,7 +46,7 @@ jobs:
             echo "RELEASE_NOTES<<$delimiter"
             cat release-notes.md
             echo "$delimiter"
-          }
+          } >> "$GITHUB_ENV"
       - name: Open pull request
         uses: peter-evans/create-pull-request@v8.1.1
         with:
@@ -58,4 +58,9 @@ jobs:
             CHANGELOG.md
           commit-message: Prepare release ${{ env.NEW_VERSION }}
           title: Release ${{ env.NEW_VERSION }}
-          body: ${{ env.RELEASE_NOTES }}
+          body: |
+            Merging this PR publishes ${{ env.NEW_VERSION }} to PyPI and
+            creates the ${{ env.NEW_VERSION }} tag and GitHub release
+            automatically.
+
+            ${{ env.RELEASE_NOTES }}

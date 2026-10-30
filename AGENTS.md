@@ -63,8 +63,10 @@ dependency. Managed with uv (`uv_build` backend, `uv.lock` committed).
   under `## [Unreleased]` in the same PR.
 - Version lives in `pyproject.toml`; releases are tagged with the bare
   version (e.g. `1.1.0`).
-- Publishing goes through `.github/workflows/publish.yml`: `uv build`,
-  then trusted publishing to PyPI.
+- Publishing goes through `.github/workflows/publish.yml`, which triggers
+  automatically when a release PR is merged: `uv build`, trusted publishing
+  to PyPI, then a tagged GitHub release via `softprops/action-gh-release`
+  (the tag is only created after the PyPI upload succeeds).
 
 ## Git
 
