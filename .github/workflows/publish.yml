@@ -1,7 +1,8 @@
 name: Publish
 
 on:
-  workflow_dispatch:
+  pull_request:
+    types: [closed]
 
 permissions:
   contents: read
@@ -13,21 +14,40 @@ concurrency:
 jobs:
   pypi-publish:
     name: Publish to PyPI
+    # Runs when a release PR (branch "prepare-release/X.Y.Z", opened by the
+    # prepare-release workflow's bot) is merged. Skips when the PR was
+    # closed without merging.
+    if: >-
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.user.login == 'github-actions[bot]' &&
+      startsWith(github.head_ref, 'prepare-release/')
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
       id-token: write
       contents: write
     steps:
+      # The closed-PR event's default ref points at the PR head branch, which
+      # delete-branch-on-merge removes; check out the merge commit instead.
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
       - name: Install uv
         uses: astral-sh/setup-uv@v10.2.0
-      - run: uv build
+      - name: Record version
+        run: echo "RELEASE_VERSION=$(uv version --short)" >> "$GITHUB_ENV"
+      - name: Build package
+        run: uv build
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-      - name: Tag release
-        run: |
-          version="$(uv version --short)"
-          git tag "$version"
-          git push origin "$version"
+      - name: Extract release notes
+        run: python3 .github/scripts/extract_release_notes.py "$RELEASE_VERSION"
+      - name: Create tagged release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ env.RELEASE_VERSION }}
+          name: ${{ env.RELEASE_VERSION }}
+          target_commitish: ${{ github.event.pull_request.merge_commit_sha }}
+          body_path: release-notes.md
+          make_latest: true
