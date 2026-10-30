@@ -46,7 +46,7 @@ jobs:
             echo "RELEASE_NOTES<<$delimiter"
             cat release-notes.md
             echo "$delimiter"
-          }
+          } >> "$GITHUB_ENV"
       - name: Open pull request
         uses: peter-evans/create-pull-request@v8.1.1
         with:
