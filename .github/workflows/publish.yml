@@ -32,18 +32,18 @@ jobs:
       # The closed-PR event's default ref points at the PR head branch, which
       # delete-branch-on-merge removes; check out the merge commit instead.
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           ref: ${{ github.event.pull_request.merge_commit_sha }}
       - name: Install uv
-        uses: astral-sh/setup-uv@v10.2.0
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
       - name: Record version
         id: version
         run: echo "release_version=$(uv version --short)" >> "$GITHUB_OUTPUT"
       - name: Build package
         run: uv build
       - name: Publish package distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # release/v1
 
   github-release:
     name: Create GitHub release
@@ -55,13 +55,13 @@ jobs:
       RELEASE_VERSION: ${{ needs.pypi-publish.outputs.release-version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           ref: ${{ github.event.pull_request.merge_commit_sha }}
       - name: Extract release notes
         run: python3 .github/scripts/extract_release_notes.py "$RELEASE_VERSION"
       - name: Create tagged release
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@40c2ca6ddd77ba2a30bbea8f67409c0f76868d67 # v3
         with:
           tag_name: ${{ needs.pypi-publish.outputs.release-version }}
           name: ${{ needs.pypi-publish.outputs.release-version }}
